@@ -1,80 +1,89 @@
 /* App.css */
 
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f4;
+/* Reset default styles */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
 }
 
 .app-container {
-  max-width: 800px;
-  margin: 20px auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px; /* Maximum width for larger screens */
   padding: 20px;
   background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.add-note-container {
+  flex: 1 1 320px; /* The Add Note section will take up to 320px of width */
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.notes-container {
+  flex: 2 1 600px; /* The Notes List will take up most of the space */
+  min-width: 500px;
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
 
 h1 {
+  font-size: 2rem;
   color: #333;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
-label {
-  margin-bottom: 8px;
+input, textarea {
+  padding: 15px;
   font-size: 16px;
-}
-
-input {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid #ddd;
   width: 100%;
-}
-
-.button1,
-.button2 {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.button1 {
-  width: 100%;
-}
-
-.button2 {
-  width: 49%;
-
+  background-color: #f9f9f9;
 }
 
 textarea {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
   resize: vertical;
-  height: 100px;
-  width: 100%;
+  min-height: 120px;
 }
 
 button {
+  padding: 12px;
+  font-size: 16px;
+  color: white;
   background-color: #4caf50;
-  color: #fff;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -82,23 +91,93 @@ button:hover {
 }
 
 ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
 li {
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: #eee;
-  border-radius: 5px;
+  background-color: #f4f4f4;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 li strong {
-  font-size: 18px;
+  font-size: 1.25rem;
   color: #333;
 }
 
 li p {
-  font-size: 16px;
-  color: #555;
+  color: #666;
+  font-size: 1rem;
+}
+
+li button {
+  align-self: flex-start;
+  background-color: #f44336;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+li button:hover {
+  background-color: #e53935;
+}
+
+li button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+@media (max-width: 900px) {
+  .app-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .add-note-container, .notes-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  input, textarea {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-container {
+    padding: 15px;
+  }
+
+  .add-note-container, .notes-container {
+    padding: 15px;
+  }
+
+  input, textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  li {
+    padding: 15px;
+  }
 }
