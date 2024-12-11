@@ -48,18 +48,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes for login/logout
-app.post('/login', passport.authenticate('local'), (req, res) => {
-  res.json({ username: req.user.username });
-});
-
-app.post('/logout', (req, res) => {
-  req.logout((err) => {
-    if (err) return res.status(500).json({ error: 'Logout failed' });
-    res.json({ message: 'Logged out successfully' });
-  });
-});
-
 // Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -69,10 +57,11 @@ db.once("open", () => {
   console.log("Connected to MongoDB Atlas");
 });
 
-// Define Note model
+// Define Note model with just the IP field
 const Note = mongoose.model("Note", {
     title: String,
     content: String,
+    ip: String,  // Store the IP (both for creation and editing)
 });
 
 // Routes for notes
@@ -85,14 +74,20 @@ app.get("/api/notes", async (req, res) => {
     }
 });
 
+// Create a new note
 app.post("/api/notes", async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, ip } = req.body;
 
-    if (!title || !content) {
-        return res.status(400).json({ message: 'Title and content are required.' });
+    if (!title || !content || !ip) {
+        return res.status(400).json({ message: 'Title, content, and IP address are required.' });
     }
 
-    const note = new Note({ title, content });
+    // Save the note with the provided IP
+    const note = new Note({ 
+        title, 
+        content, 
+        ip // Save the IP (both for creation and editing)
+    });
 
     try {
         const newNote = await note.save();
@@ -102,22 +97,36 @@ app.post("/api/notes", async (req, res) => {
     }
 });
 
+// Update an existing note
 app.put("/api/notes/:id", async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, ip } = req.body;
     const noteId = req.params.id;
 
     try {
+        const note = await Note.findById(noteId);
+
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+
+        // Update the note with the new IP
         const updatedNote = await Note.findByIdAndUpdate(
             noteId,
-            { title, content },
+            {
+                title,
+                content,
+                ip,  // Update the IP (same field for creation and editing)
+            },
             { new: true }
         );
-        res.json(updatedNote);
+
+        res.json(updatedNote); // Return the updated note with the new IP
     } catch (error) {
         res.status(404).json({ message: "Note not found" });
     }
 });
 
+// Delete a note
 app.delete("/api/notes/:id", async (req, res) => {
     const noteId = req.params.id;
 
