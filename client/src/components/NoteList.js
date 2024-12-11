@@ -1,5 +1,3 @@
-// components/NoteList.js
-
 import React from "react";
 
 const NoteList = ({ notes, onEditNote, onDeleteNote }) => {
@@ -9,6 +7,9 @@ const NoteList = ({ notes, onEditNote, onDeleteNote }) => {
                 <li key={note._id}>
                     <strong>{note.title}</strong>
                     <p>{note.content}</p>
+
+                    {/* Display the IP */}
+                    <p><em>IP: {note.ip}</em></p>
 
                     <button
                         className="button2"

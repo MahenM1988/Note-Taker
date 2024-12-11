@@ -8,13 +8,29 @@ import Navbar from './components/Navbar'; // Import Navbar component
 
 const App = () => {
     const [notes, setNotes] = useState([]);
+    const [ip, setIp] = useState('');
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState('');
     const [error, setError] = useState(null); // Add error state
 
-    const handleLogin = async (username, password) => {
+    useEffect(() => {
+        // Get the user's public IP when the component mounts
+        const getPublicIP = async () => {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                setIp(data.ip); // Store the user's IP address
+            } catch (error) {
+                console.error('Error fetching public IP:', error);
+            }
+        };
+
+        getPublicIP();
+    }, []);
+
+    async function handleLogin(username, password) {
         try {
             const response = await fetch('http://localhost:5000/login', {
                 method: 'POST',
@@ -33,7 +49,7 @@ const App = () => {
             setError("Login failed. Please try again."); // Set error state
             console.error('Login error:', error);
         }
-    };
+    }
 
     const handleLogout = async () => {
         try {
@@ -57,7 +73,11 @@ const App = () => {
 
     const handleAddNote = () => {
         axios
-            .post("http://localhost:5000/api/notes", { title, content })
+            .post("http://localhost:5000/api/notes", { 
+                title, 
+                content,
+                ip // Send the IP address along with the note
+            })
             .then((response) => {
                 setNotes([...notes, response.data]);
                 setTitle("");
@@ -66,9 +86,14 @@ const App = () => {
             .catch((error) => setError("Error adding note.")); // Handle error
     };
 
-    const handleEditNote = (id, updatedTitle, updatedContent) => {
+    const handleEditNote = (id, updatedTitle, updatedContent, ip) => {
         axios
-            .put(`http://localhost:5000/api/notes/${id}`, { title: updatedTitle, content: updatedContent })
+            .put(`http://localhost:5000/api/notes/${id}`, {
+                title: updatedTitle,
+                content: updatedContent,
+                ip: ip, // Send the original IP for consistency
+                editedBy: ip, // Update the editedByIp with the current IP
+            })
             .then((response) => {
                 const updatedNotes = notes.map((note) =>
                     note._id === id ? response.data : note
@@ -76,7 +101,7 @@ const App = () => {
                 setNotes(updatedNotes);
             })
             .catch((error) => setError("Error updating note.")); // Handle error
-    };
+    };    
 
     const handleDeleteNote = (id) => {
         axios
@@ -108,15 +133,13 @@ const App = () => {
                     <div className="app-container">
                         <div className="add-note-container">
                             <AddNote
+                                ip={ip}
                                 title={title}
                                 setTitle={setTitle}
                                 content={content}
                                 setContent={setContent}
                                 onAddNote={handleAddNote}
                             />
-                            <a href="" target="_blank" className="gallery-link">
-                                Gallery
-                            </a>
                         </div>
                         <NoteList
                             notes={notes}
