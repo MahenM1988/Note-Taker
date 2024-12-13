@@ -4,7 +4,7 @@ import "./App.css";
 import NoteList from "./components/NoteList";
 import AddNote from "./components/AddNote";
 import Login from './components/Login';
-import Navbar from './components/Navbar'; // Import Navbar component
+import Navbar from './components/Navbar'; 
 
 const App = () => {
     const [notes, setNotes] = useState([]);
@@ -13,15 +13,14 @@ const App = () => {
     const [content, setContent] = useState("");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState('');
-    const [error, setError] = useState(null); // Add error state
+    const [error, setError] = useState(null); 
 
     useEffect(() => {
-        // Get the user's public IP when the component mounts
         const getPublicIP = async () => {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
-                setIp(data.ip); // Store the user's IP address
+                setIp(data.ip); 
             } catch (error) {
                 console.error('Error fetching public IP:', error);
             }
@@ -46,7 +45,7 @@ const App = () => {
                 alert('Invalid credentials');
             }
         } catch (error) {
-            setError("Login failed. Please try again."); // Set error state
+            setError("Login failed. Please try again."); 
             console.error('Login error:', error);
         }
     }
@@ -63,11 +62,10 @@ const App = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            // Fetch notes only when the user is authenticated
             axios
                 .get("http://localhost:5000/api/notes")
                 .then((response) => setNotes(response.data))
-                .catch((error) => setError("Error fetching notes.")); // Handle error gracefully
+                .catch((error) => setError("Error fetching notes.")); 
         }
     }, [isAuthenticated]);
 
@@ -76,14 +74,14 @@ const App = () => {
             .post("http://localhost:5000/api/notes", { 
                 title, 
                 content,
-                ip // Send the IP address along with the note
+                ip 
             })
             .then((response) => {
                 setNotes([...notes, response.data]);
                 setTitle("");
                 setContent("");
             })
-            .catch((error) => setError("Error adding note.")); // Handle error
+            .catch((error) => setError("Error adding note.")); 
     };
 
     const handleEditNote = (id, updatedTitle, updatedContent, ip) => {
@@ -91,8 +89,8 @@ const App = () => {
             .put(`http://localhost:5000/api/notes/${id}`, {
                 title: updatedTitle,
                 content: updatedContent,
-                ip: ip, // Send the original IP for consistency
-                editedBy: ip, // Update the editedByIp with the current IP
+                ip: ip, 
+                editedBy: ip, 
             })
             .then((response) => {
                 const updatedNotes = notes.map((note) =>
@@ -100,7 +98,7 @@ const App = () => {
                 );
                 setNotes(updatedNotes);
             })
-            .catch((error) => setError("Error updating note.")); // Handle error
+            .catch((error) => setError("Error updating note.")); 
     };    
 
     const handleDeleteNote = (id) => {
@@ -110,7 +108,7 @@ const App = () => {
                 const updatedNotes = notes.filter((note) => note._id !== id);
                 setNotes(updatedNotes);
             })
-            .catch((error) => setError("Error deleting note.")); // Handle error
+            .catch((error) => setError("Error deleting note.")); 
     };
 
     const copyrightStyles = {

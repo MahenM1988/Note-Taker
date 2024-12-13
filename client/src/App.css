@@ -132,52 +132,123 @@ li button:focus {
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
-@media (max-width: 900px) {
-  .app-container {
-    flex-direction: column;
-    gap: 20px;
+/* Login form container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+p {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+}
+
+.input:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+.button {
+  padding: 12px;
+  font-size: 16px;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #45a049;
+}
+
+/* Media Queries for Login Form Responsiveness */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 15px;
+    width: 90%; /* Slightly reduce width on smaller screens */
   }
 
-  .add-note-container, .notes-container {
-    width: 100%;
-    max-width: 100%;
+  h2 {
+    font-size: 1.6rem;
   }
 
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  button {
+  .input {
     padding: 10px;
     font-size: 14px;
   }
 
-  input, textarea {
+  .button {
+    padding: 10px;
     font-size: 14px;
-    padding: 12px;
   }
 }
 
-@media (max-width: 600px) {
-  .app-container {
-    padding: 15px;
-  }
-
-  .add-note-container, .notes-container {
-    padding: 15px;
-  }
-
-  input, textarea {
-    font-size: 14px;
+@media (max-width: 480px) {
+  .login-form {
     padding: 10px;
+    width: 90%;
   }
 
-  button {
-    padding: 10px;
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .input {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .button {
+    padding: 8px;
     font-size: 14px;
   }
 
-  li {
-    padding: 15px;
+  p {
+    font-size: 0.8rem;
   }
 }
+
+/* Add any specific styles below for other sections if needed */

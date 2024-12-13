@@ -4,26 +4,25 @@ const AddNote = ({ title, setTitle, content, setContent, onAddNote, onEditNote, 
     const [ip, setIp] = useState('');
 
     useEffect(() => {
-        // Fetch the user's public IP address when the component mounts or when editing a note
         const getPublicIP = async () => {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
                 const data = await response.json();
-                setIp(data.ip); // Store the user's IP address
+                setIp(data.ip); 
             } catch (error) {
                 console.error('Error fetching IP address:', error);
             }
         };
 
         getPublicIP();
-    }, [noteId]); // Trigger fetching IP when noteId changes (for editing)
+    }, [noteId]); 
 
     const handleAddNote = () => {
-        onAddNote(ip);  // Pass IP to the parent component (App.js) for adding a note
+        onAddNote(ip);  
     };
 
     const handleEditNote = () => {
-        onEditNote(noteId, ip);  // Pass IP to the parent component (App.js) for updating a note
+        onEditNote(noteId, ip);  
     };
 
     return (

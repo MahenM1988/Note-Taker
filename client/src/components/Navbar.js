@@ -3,7 +3,7 @@ import React from 'react';
 const Navbar = ({ username, handleLogout }) => (
   <nav style={styles.navbar}>
     <div style={styles.branding}>
-      <h1 style={styles.logo}>Welcome to the to the Note Taker App</h1>
+      <h1 style={styles.logo}>Note Taker App</h1>
     </div>
 
     <div style={styles.navItems}>
