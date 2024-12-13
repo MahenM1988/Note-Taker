@@ -1,4 +1,4 @@
-# MERN Stack Notes Management Project
+# MERN Stack Notes Management App
 
 This is a complete **MERN stack** project designed to manage notes with real-time updates. For testing purposes, an "Admin" user is provided with the hashed password "123." Notes are stored in a **MongoDB** database, where they can be created, edited, or deleted. Each note action includes the public IP address, retrieved via an API call to **Ipyfi**, as an added security measure. This helps maintain a clean and safe testing environment, preventing the creation of inappropriate or offensive content by unauthorized users.
 
