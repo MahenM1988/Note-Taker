@@ -11,7 +11,6 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 5000; 
 
-// Placeholder users, replace with real DB in production
 const users = [{ id: 1, username: 'Admin', password: bcrypt.hashSync('123', 10) }];
 
 passport.use(new LocalStrategy((username, password, done) => {
@@ -33,7 +32,6 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
@@ -48,7 +46,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
@@ -57,14 +54,23 @@ db.once("open", () => {
   console.log("Connected to MongoDB Atlas");
 });
 
-// Define Note model with just the IP field
 const Note = mongoose.model("Note", {
     title: String,
     content: String,
-    ip: String,  // Store the IP (both for creation and editing)
+    ip: String,  
 });
 
-// Routes for notes
+app.post('/login', passport.authenticate('local'), (req, res) => {
+    res.json({ username: req.user.username });
+  });
+  
+  app.post('/logout', (req, res) => {
+    req.logout((err) => {
+      if (err) return res.status(500).json({ error: 'Logout failed' });
+      res.json({ message: 'Logged out successfully' });
+    });
+  });
+
 app.get("/api/notes", async (req, res) => {
     try {
         const notes = await Note.find();
@@ -74,7 +80,6 @@ app.get("/api/notes", async (req, res) => {
     }
 });
 
-// Create a new note
 app.post("/api/notes", async (req, res) => {
     const { title, content, ip } = req.body;
 
@@ -82,11 +87,10 @@ app.post("/api/notes", async (req, res) => {
         return res.status(400).json({ message: 'Title, content, and IP address are required.' });
     }
 
-    // Save the note with the provided IP
     const note = new Note({ 
         title, 
         content, 
-        ip // Save the IP (both for creation and editing)
+        ip 
     });
 
     try {
@@ -97,7 +101,6 @@ app.post("/api/notes", async (req, res) => {
     }
 });
 
-// Update an existing note
 app.put("/api/notes/:id", async (req, res) => {
     const { title, content, ip } = req.body;
     const noteId = req.params.id;
@@ -109,24 +112,22 @@ app.put("/api/notes/:id", async (req, res) => {
             return res.status(404).json({ message: "Note not found" });
         }
 
-        // Update the note with the new IP
         const updatedNote = await Note.findByIdAndUpdate(
             noteId,
             {
                 title,
                 content,
-                ip,  // Update the IP (same field for creation and editing)
+                ip,  
             },
             { new: true }
         );
 
-        res.json(updatedNote); // Return the updated note with the new IP
+        res.json(updatedNote); 
     } catch (error) {
         res.status(404).json({ message: "Note not found" });
     }
 });
 
-// Delete a note
 app.delete("/api/notes/:id", async (req, res) => {
     const noteId = req.params.id;
 
