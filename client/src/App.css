@@ -23,7 +23,7 @@ body {
   justify-content: space-between;
   gap: 30px;
   width: 100%;
-  max-width: 1200px; /* Maximum width for larger screens */
+  max-width: 1200px; 
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
@@ -31,7 +31,7 @@ body {
 }
 
 .add-note-container {
-  flex: 1 1 320px; /* The Add Note section will take up to 320px of width */
+  flex: 1 1 320px; 
   background-color: #ffffff;
   padding: 25px;
   border-radius: 10px;
@@ -39,7 +39,7 @@ body {
 }
 
 .notes-container {
-  flex: 2 1 600px; /* The Notes List will take up most of the space */
+  flex: 2 1 600px; 
   min-width: 500px;
   background-color: #ffffff;
   padding: 25px;
@@ -208,7 +208,7 @@ label {
 @media (max-width: 768px) {
   .login-form {
     padding: 15px;
-    width: 90%; /* Slightly reduce width on smaller screens */
+    width: 90%; 
   }
 
   h2 {
