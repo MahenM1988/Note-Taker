@@ -9,7 +9,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const app = express();
-const port = process.env.PORT || 5000; 
+const port = process.env.PORT || 5000;
 
 const users = [{ id: 1, username: 'Admin', password: bcrypt.hashSync('123', 10) }];
 
@@ -57,19 +57,20 @@ db.once("open", () => {
 const Note = mongoose.model("Note", {
     title: String,
     content: String,
-    ip: String,  
+    ip: String,
+    timestamp: { type: Date, default: Date.now }  
 });
 
 app.post('/login', passport.authenticate('local'), (req, res) => {
     res.json({ username: req.user.username });
-  });
+});
   
-  app.post('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     req.logout((err) => {
       if (err) return res.status(500).json({ error: 'Logout failed' });
       res.json({ message: 'Logged out successfully' });
     });
-  });
+});
 
 app.get("/api/notes", async (req, res) => {
     try {
@@ -90,7 +91,8 @@ app.post("/api/notes", async (req, res) => {
     const note = new Note({ 
         title, 
         content, 
-        ip 
+        ip,
+        timestamp: new Date()  
     });
 
     try {
@@ -117,7 +119,8 @@ app.put("/api/notes/:id", async (req, res) => {
             {
                 title,
                 content,
-                ip,  
+                ip,
+                timestamp: new Date()  
             },
             { new: true }
         );
