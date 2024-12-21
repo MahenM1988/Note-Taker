@@ -17,12 +17,18 @@ const AddNote = ({ title, setTitle, content, setContent, onAddNote, onEditNote, 
         getPublicIP();
     }, [noteId]); 
 
+    const getCurrentTimestamp = () => {
+        return new Date().toISOString(); 
+    };
+
     const handleAddNote = () => {
-        onAddNote(ip);  
+        const timestamp = getCurrentTimestamp();
+        onAddNote(ip, timestamp);  
     };
 
     const handleEditNote = () => {
-        onEditNote(noteId, ip);  
+        const timestamp = getCurrentTimestamp();
+        onEditNote(noteId, ip, timestamp);  
     };
 
     return (

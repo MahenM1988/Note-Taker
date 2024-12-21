@@ -90,7 +90,6 @@ const App = () => {
                 title: updatedTitle,
                 content: updatedContent,
                 ip: ip, 
-                editedBy: ip, 
             })
             .then((response) => {
                 const updatedNotes = notes.map((note) =>
@@ -118,7 +117,7 @@ const App = () => {
         color: '#888',
         marginTop: '20px',  
         padding: '10px 0',
-      };
+    };
 
     return (
         <div className="main-container">
@@ -140,7 +139,7 @@ const App = () => {
                             />
                         </div>
                         <NoteList
-                            notes={notes}
+                            notes={notes}  
                             onEditNote={handleEditNote}
                             onDeleteNote={handleDeleteNote}
                         />
