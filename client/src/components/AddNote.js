@@ -1,38 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const AddNote = ({ title, setTitle, content, setContent, onAddNote, onEditNote, noteId }) => {
+
     const [ip, setIp] = useState('');
 
     useEffect(() => {
-        const getPublicIP = async () => {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                setIp(data.ip); 
-            } catch (error) {
-                console.error('Error fetching IP address:', error);
-            }
+        const getIpAddress = async () => {
+            const response = await fetch('/api/get-ip');
+            const data = await response.json();
+            setIp(data.ip);
         };
 
-        getPublicIP();
-    }, [noteId]); 
-
-    const getCurrentTimestamp = () => {
-        return new Date().toISOString(); 
-    };
+        getIpAddress();
+    }, []);
 
     const handleAddNote = () => {
-        const timestamp = getCurrentTimestamp();
-        onAddNote(ip, timestamp);  
+        console.log('Adding note with title:', title, 'and content:', content); 
+        onAddNote(title, content, ip); 
     };
 
     const handleEditNote = () => {
-        const timestamp = getCurrentTimestamp();
-        onEditNote(noteId, ip, timestamp);  
+        console.log('Editing note with ID:', noteId, 'and title:', title, 'and content:', content); 
+        onEditNote(noteId, title, content, ip); 
     };
 
     return (
-        <div>
+        <div key={noteId}>
             <h2>{noteId ? "Edit Note" : "Add Note"}</h2>
             <input
                 type="text"
