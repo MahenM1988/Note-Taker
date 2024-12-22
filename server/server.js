@@ -54,17 +54,33 @@ db.once("open", () => {
   console.log("Connected to MongoDB Atlas");
 });
 
+// Separate connection for logging database
+const logDb = mongoose.createConnection(process.env.MONGODB_LOG_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const Log = logDb.model("Log", {
+    action: String,
+    noteId: String,
+    timestamp: { type: Date, default: Date.now },
+    ipAddress: String
+});
+
+// Note Model
 const Note = mongoose.model("Note", {
     title: String,
     content: String,
-    ip: String,
-    timestamp: { type: Date, default: Date.now }  
 });
 
+// Route to get IP address of the client
+app.get("/api/get-ip", (req, res) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    res.json({ ip });
+});
+
+// Login Route
 app.post('/login', passport.authenticate('local'), (req, res) => {
     res.json({ username: req.user.username });
 });
-  
+
+// Logout Route
 app.post('/logout', (req, res) => {
     req.logout((err) => {
       if (err) return res.status(500).json({ error: 'Logout failed' });
@@ -72,6 +88,7 @@ app.post('/logout', (req, res) => {
     });
 });
 
+// Get all notes
 app.get("/api/notes", async (req, res) => {
     try {
         const notes = await Note.find();
@@ -81,31 +98,41 @@ app.get("/api/notes", async (req, res) => {
     }
 });
 
+// Add a new note
 app.post("/api/notes", async (req, res) => {
     const { title, content, ip } = req.body;
 
-    if (!title || !content || !ip) {
-        return res.status(400).json({ message: 'Title, content, and IP address are required.' });
+    if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required.' });
     }
 
     const note = new Note({ 
         title, 
-        content, 
-        ip,
-        timestamp: new Date()  
+        content 
     });
 
     try {
         const newNote = await note.save();
+
+        // Log the action (Add)
+        const log = new Log({
+            action: 'add',
+            noteId: newNote._id,
+            ipAddress: ip
+        });
+        await log.save();
+
         res.status(201).json(newNote);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
 
+// Edit an existing note
 app.put("/api/notes/:id", async (req, res) => {
-    const { title, content, ip } = req.body;
+    const { title, content } = req.body;
     const noteId = req.params.id;
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;  
 
     try {
         const note = await Note.findById(noteId);
@@ -116,35 +143,50 @@ app.put("/api/notes/:id", async (req, res) => {
 
         const updatedNote = await Note.findByIdAndUpdate(
             noteId,
-            {
-                title,
-                content,
-                ip,
-                timestamp: new Date()  
-            },
+            { title, content },
             { new: true }
         );
 
-        res.json(updatedNote); 
+        // Log the action (Edit)
+        const log = new Log({
+            action: 'edit',
+            noteId: updatedNote._id,
+            ipAddress: ip
+        });
+        await log.save();
+
+        res.json(updatedNote);
     } catch (error) {
         res.status(404).json({ message: "Note not found" });
     }
 });
 
+// Delete a note
 app.delete("/api/notes/:id", async (req, res) => {
     const noteId = req.params.id;
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;  
 
     try {
         const deletedNote = await Note.findByIdAndDelete(noteId);
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found" });
         }
+
+        // Log the action (Delete)
+        const log = new Log({
+            action: 'delete',
+            noteId: deletedNote._id,
+            ipAddress: ip
+        });
+        await log.save();
+
         res.json({ message: "Note deleted successfully", note: deletedNote });
     } catch (error) {
         res.status(500).json({ message: "Error deleting note", error: error.message });
     }
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
