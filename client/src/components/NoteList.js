@@ -8,12 +8,6 @@ const NoteList = ({ notes, onEditNote, onDeleteNote }) => {
                     <strong>{note.title}</strong>
                     <p>{note.content}</p>
 
-                    {/* Display the IP */}
-                    <p><em>IP: {note.ip}</em></p>
-
-                    {/* Display the timestamp */}
-                    <p><em>Created on: {new Date(note.timestamp).toLocaleString()}</em></p> {/* Format timestamp */}
-
                     <button
                         className="button2"
                         style={{ marginRight: "15px" }}
