@@ -59,6 +59,8 @@ const logDb = mongoose.createConnection(process.env.MONGODB_LOG_URI, { useNewUrl
 const Log = logDb.model("Log", {
     action: String,
     noteId: String,
+    title: String,
+    content: String,
     timestamp: { type: Date, default: Date.now },
     ipAddress: String
 });
@@ -118,7 +120,9 @@ app.post("/api/notes", async (req, res) => {
         const log = new Log({
             action: 'add',
             noteId: newNote._id,
-            ipAddress: ip
+            title: newNote.title,
+            content: newNote.content,
+            ipAddress: ip,
         });
         await log.save();
 
@@ -141,19 +145,30 @@ app.put("/api/notes/:id", async (req, res) => {
             return res.status(404).json({ message: "Note not found" });
         }
 
-        const updatedNote = await Note.findByIdAndUpdate(
-            noteId,
-            { title, content },
-            { new: true }
-        );
-
-        // Log the action (Edit)
+        // Log the action (Edit) - we log the old note before update
         const log = new Log({
             action: 'edit',
-            noteId: updatedNote._id,
-            ipAddress: ip
+            noteId: note._id,
+            title: note.title,
+            content: note.content,
+            ipAddress: ip,
         });
         await log.save();
+
+        // Update the note with new title and content
+        note.title = title;
+        note.content = content;
+        const updatedNote = await note.save();
+
+        // Log the action (Edit) - after the update
+        const updatedLog = new Log({
+            action: 'edit',
+            noteId: updatedNote._id,
+            title: updatedNote.title,
+            content: updatedNote.content,
+            ipAddress: ip,
+        });
+        await updatedLog.save();
 
         res.json(updatedNote);
     } catch (error) {
@@ -167,20 +182,25 @@ app.delete("/api/notes/:id", async (req, res) => {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;  
 
     try {
-        const deletedNote = await Note.findByIdAndDelete(noteId);
-        if (!deletedNote) {
+        const note = await Note.findById(noteId);
+        if (!note) {
             return res.status(404).json({ message: "Note not found" });
         }
 
-        // Log the action (Delete)
+        // Log the action (Delete) with the note's details before deletion
         const log = new Log({
             action: 'delete',
-            noteId: deletedNote._id,
-            ipAddress: ip
+            noteId: note._id,
+            title: note.title,
+            content: note.content,
+            ipAddress: ip,
         });
         await log.save();
 
-        res.json({ message: "Note deleted successfully", note: deletedNote });
+        // Now delete the note
+        await Note.findByIdAndDelete(noteId);
+
+        res.json({ message: "Note deleted successfully", note: { title: note.title, content: note.content } });
     } catch (error) {
         res.status(500).json({ message: "Error deleting note", error: error.message });
     }
