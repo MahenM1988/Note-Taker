@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-3
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  nodejs:
+    build: ./server
+    container_name: nodejs-server-3
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  react:
+    build: ./client
+    container_name: react-client-3
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
