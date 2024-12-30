@@ -18,7 +18,7 @@ const App = () => {
     useEffect(() => {
         const getPublicIP = async () => {
             try {
-                const response = await fetch('https://api.ipify.org?format=json');
+                const response = await fetch('http://api.ipify.org?format=json');
                 const data = await response.json();
                 setIp(data.ip); 
             } catch (error) {
@@ -118,8 +118,10 @@ const App = () => {
         color: '#888',
         marginTop: '20px',  
         padding: '10px 0',
-      };
-
+        position: 'relative',
+        bottom: '0', 
+    };
+    
     return (
         <div className="main-container">
             {isAuthenticated ? (

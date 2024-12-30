@@ -158,12 +158,14 @@ h2 {
   font-size: 1.8rem;
   margin-bottom: 20px;
   color: #333;
+  text-align: center; 
 }
 
 p {
   font-size: 0.9rem;
   margin-bottom: 10px;
   color: #666;
+  text-align: center; 
 }
 
 label {
@@ -250,5 +252,3 @@ label {
     font-size: 0.8rem;
   }
 }
-
-/* Add any specific styles below for other sections if needed */
