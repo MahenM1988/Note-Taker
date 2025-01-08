@@ -153,7 +153,7 @@ const App = () => {
             )}
             {/* Copyright Section */}
             <div style={copyrightStyles}>
-              <p>&copy; 2024 Mahen Mahindaratne. All Rights Reserved.</p>
+              <p>&copy; 2025 Mahen Mahindaratne. All Rights Reserved.</p>
             </div>
         </div>
     );    
